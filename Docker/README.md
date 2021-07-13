@@ -42,11 +42,11 @@
 		<td>Show the list of running containers</td>
 	</tr>
 	<tr>
-		<td>docker run -d ```image_name``` </td>
+		<td>docker run -d <strong>image_name</strong> </td>
 		<td>Run the image withouth disabling the terminal</td>
 	</tr>
 	<tr>
-		<td>docker run --name ```name``` ```image_name```</td>
+		<td>docker run --name <strong>name</strong> <strong>image_name</strong></td>
 		<td>Create a container with a specific name</td>
 	</tr>
 </tbody>

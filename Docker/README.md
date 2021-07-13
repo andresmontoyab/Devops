@@ -62,9 +62,17 @@
 		<td>docker run -it <strong>image_name</strong></td>
 		<td>Iterative mode when create a container</td>
 	</tr>
+		<tr>
+		<td>docker start <strong>image_name</strong> </strong></td>
+		<td>Start a container that was previously created</td>
+	</tr>
 	<tr>
 		<td>docker exec -it <strong>container_name</strong> bash </td>
 		<td> Enter to iterative mode in a container already created.</td>
+	</tr>
+		<tr>
+		<td> docker stop <strong>container_number</strong> </td>
+		<td> Stop a container that is running</td>
 	</tr>
 	<tr>
 		<td>docker ps</td>
@@ -73,6 +81,10 @@
 	<tr>
 		<td>docker ps -a</td>
 		<td>Show the list of the container running or sttoped</td>
+	</tr>
+	<tr>
+		<td>docker logs -f <strong>image_number</strong></td>
+		<td>Show the container logs</td>
 	</tr>
 	<tr>
 		<td>docker run -d <strong>image_name</strong> </td>
@@ -84,12 +96,6 @@
 	</tr>
 </tbody>
 </table>
-
-docker stop numberImage --> Stop a container that is running
-
-docker start <image_name> --> Start an image that was previously started
-
-docker logs -f numberImage --> Show the container logs
 
 docker rm <name_container> --> Delete the container, when you run docker ps -a the container shouldn't be there.
 

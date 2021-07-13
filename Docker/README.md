@@ -25,6 +25,28 @@
 
 ## Commands
 
+<table>
+<thead>
+	<tr>
+	<th>Commands</th>
+	<th>Action</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td>docker ps -a</td>
+		<td>Show the list of the container running or sttoped</td>
+	</tr>
+	<tr>
+		<td>docker ps</td>
+		<td>Show the list of running containers</td>
+	</tr>
+</tbody>
+</table>
+
+| Command | Action |
+| ------- | -------|
+
 docker ps -a --> Show the list of containers running or stopped.
 
 docker ps --> Show the list of images running(containers).

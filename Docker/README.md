@@ -10,6 +10,8 @@
 	* [Images](#Images)
 	* [Volumes](#Volumes)
 	* [Docker Hub](#Docker-Hub)
+		* [Docker Push](#Docker-Push)
+		* [Docker Search](#Docker-Search)
 	* [Docker File](#Docker-File)
 	* [Docker Push](#Docker-Push)
 	* [Docker Compose](#Docker-Compose)
@@ -87,7 +89,7 @@ docker push <image_name> : --> Publish a image in docker hub
 
 ![](https://github.com/andresmontoyab/dockerDocumentation/blob/master/resources/vm-vs-container.JPG) 
 
-## Concepts Docker
+## Docker Concepts
 
 1. Docker Image --> Is a template, is the basis for the containers.
 
@@ -136,7 +138,37 @@ In previous section we use commands as docker run mongo. This command download a
 
 All of this information comes from hub.docker.com or Docker Hub.
 
-1. Docker Hub is public repository in which we can find all the docker images.
+- Docker Hub is public repository in which we can find all the docker images.
+
+If we want to upload a docker image we can use the command `docker push`
+
+### Docker Search
+
+If we want to check which images are available in docker hub from a specific technology we can use the command ```docker search```
+
+```sh
+docker search <name_image_to_search>
+docker search ubuntu # Retrieve us all the ubuntu images available
+```
+
+### Docker Push
+
+As we can download information from Docker Hub we can also publish our own images.
+
+To do that we will perform the following steps.
+
+```sh
+docker login
+docker push <image_name>
+```
+
+### Docker Pull
+
+As we saw in previous section we can use the command `docker push` to upload new images to `docker hub` and also we can use the command `docker search` to search images in `docker hub`, but how to download the images? In order to download the images we can use the command `docker pull`
+
+```sh
+docker pull <image_name>
+```
 
 ## Docker File
 
@@ -180,15 +212,7 @@ Nevertheless if we made some changes and at least one layer detect that the cach
 
 One posible solution to not reload all the layers is re order the instructions in order to only re load the necesary.
 
-## Docker Push
 
-As we can download information from Docker Hub we can also publish our own images.
-
-To do that we will perform the following steps.
-
-		docker login
-
-		docker push <image_name>
 
 ## Docker Compose	
 

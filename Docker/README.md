@@ -41,19 +41,16 @@
 		<td>docker ps</td>
 		<td>Show the list of running containers</td>
 	</tr>
+	<tr>
+		<td>docker run -d ```<image_name>``` </td>
+		<td>Run the image withouth disabling the terminal</td>
+	</tr>
+	<tr>
+		<td>docker run --name ```<name>``` ```<image_name>```</td>
+		<td>Create a container with a specific name</td>
+	</tr>
 </tbody>
 </table>
-
-| Command | Action |
-| ------- | -------|
-
-docker ps -a --> Show the list of containers running or stopped.
-
-docker ps --> Show the list of images running(containers).
-
-docker run -d image --> Run the image withouth disable the terminal.
-
-docker run --name <name> <image_name> --> Create a container with a specific name
 
 docker stop numberImage --> Stop a container that is running
 

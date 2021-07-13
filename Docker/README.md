@@ -34,12 +34,45 @@
 </thead>
 <tbody>
 	<tr>
-		<td>docker ps -a</td>
-		<td>Show the list of the container running or sttoped</td>
+		<td>docker images</td>
+		<td>List all the images.</td>
+	</tr>
+	<tr>
+		<td>docker rmi <strong>image_name</strong></td>
+		<td>Delete an image.</td>
+	</tr>
+	<tr>
+		<td>docker run <strong>image_name</strong> </td>
+		<td>Docker run is going to start a container</td>
+	</tr>
+	<tr>
+		<td>docker run -d <strong>image_name</strong> </td>
+		<td>Run the image withouth disabling the terminal</td>
+	</tr>
+	<tr>
+		<td>docker run --name <strong>name</strong> <strong>image_name</strong></td>
+		<td>Create a container with a specific name</td>
+	</tr>
+		<tr>
+		<td>docker run -p 27017:27017 -d <strong>image_name</strong></td>
+		<td>Exposse a container port in the port 27017</td>
+	</tr>
+	</tr>
+	<tr>
+		<td>docker run -it <strong>image_name</strong></td>
+		<td>Iterative mode when create a container</td>
+	</tr>
+	<tr>
+		<td>docker exec -it <strong>container_name</strong> bash </td>
+		<td> Enter to iterative mode in a container already created.</td>
 	</tr>
 	<tr>
 		<td>docker ps</td>
 		<td>Show the list of running containers</td>
+	</tr>
+	<tr>
+		<td>docker ps -a</td>
+		<td>Show the list of the container running or sttoped</td>
 	</tr>
 	<tr>
 		<td>docker run -d <strong>image_name</strong> </td>
@@ -54,21 +87,11 @@
 
 docker stop numberImage --> Stop a container that is running
 
-docker run -p 27017:27017 -d image --> Exposse a container port in the port 27017
-
 docker start <image_name> --> Start an image that was previously started
 
 docker logs -f numberImage --> Show the container logs
 
 docker rm <name_container> --> Delete the container, when you run docker ps -a the container shouldn't be there.
-
-docker run -it <name_image> --> Iterative mode when create a container
-
-docker exec -it <container_name> bash --> Enter to iterative mode in a container already created.
-
-docker images --> list all the images.
-
-docker rmi <image_name> --> Delete a image.
 
 docker commit <container_name> <name_new_image>; --> Create an image in base on a container.
 

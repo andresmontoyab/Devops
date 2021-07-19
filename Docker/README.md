@@ -13,6 +13,7 @@
 		* [Docker Push](#Docker-Push)
 		* [Docker Search](#Docker-Search)
 	* [Docker File](#Docker-File)
+		* [Docker File Instructions](#Docker-File-Instructions)
 	* [Docker Push](#Docker-Push)
 	* [Docker Compose](#Docker-Compose)
 		* [Some tags docker compose](#Some-tags-docker-compose)
@@ -74,6 +75,11 @@
 		<td> docker stop <strong>container_number</strong> </td>
 		<td> Stop a container that is running</td>
 	</tr>
+	</tr>
+		<tr>
+		<td> docker rm <strong>container_number</strong> </td>
+		<td> Delete the container, when you run docker ps -a the container shouldn't be there.</td>
+	</tr>
 	<tr>
 		<td>docker ps</td>
 		<td>Show the list of running containers</td>
@@ -87,53 +93,61 @@
 		<td>Show the container logs</td>
 	</tr>
 	<tr>
-		<td>docker run -d <strong>image_name</strong> </td>
-		<td>Run the image withouth disabling the terminal</td>
+		<td>docker commit <strong>container_name</strong> <strong>name_new_image</strong></td>
+		<td>Create an image in base on an existing container container</td>
 	</tr>
 	<tr>
-		<td>docker run --name <strong>name</strong> <strong>image_name</strong></td>
-		<td>Create a container with a specific name</td>
+		<td>docker pull <strong> image_name </strong> </td>
+		<td>Download the information of the image without running</td>
+	</tr>
+	<tr>
+		<td>docker login </td>
+		<td>Login into docker</td>
+	</tr>
+	<tr>
+		<td>docker login </td>
+		<td>Login into docker</td>
+	</tr>
+	<tr>
+		<td>docker push <strong>image_name></strong></td>
+		<td>Publish a image in docker hub</td>
 	</tr>
 </tbody>
 </table>
 
-docker rm <name_container> --> Delete the container, when you run docker ps -a the container shouldn't be there.
-
-docker commit <container_name> <name_new_image>; --> Create an image in base on a container.
-
-docker pull image -> Download the information of the image without running
-
 docker tag <current_name> <new_name> --> Change name Image
-
-docker login --> Login in docker
-
-docker push <image_name> : --> Publish a image in docker hub
 
 # Docker
 
 ## What is Docker
 
-1. Docker is an standar for linux containers.
+- Docker is an standar for linux containers.
 
-2. A container is process or amount of process that run isolate wihtin linux.
+- A container is a process or amount of process that run isolate wihtin linux.
 
-3. A container give us a private machine as space under linux OS.
+- A container give us a private machine as space under linux OS.
 
-4. Containers are going to run in every linux kernel- 
+- Virtual machine, everything running inside the VM is independent of the host operating system, or hypervisor
 
-5. Containers have their own space of process.
+- Containers are going to run in every linux kernel- 
 
-6. Docker have their own network interfaces. 
+- Containers have their own space of process.
 
-7. Run process as root.
+- Docker have their own network interfaces. 
 
-8. Has its own disk space. 
+- Run process as root.
 
-## Differences VM vs Docker
+- Has its own disk space. 
 
-1. Virtual Machine is a Software that tried to emulate a OS.
+## VM vs Docker
 
-2. Container is just the code that I want to execute and docker that is an unique layer.
+- Docker containers and virtual machines are both ways of deploying applications inside environments that are isolated from the underlying hardware. 
+
+- Virtual Machine is a Software that tried to emulate a OS.
+
+- In Docker, the containers running share the host OS kernel.
+
+- Containers are typically much smaller and faster, which makes them a much better fit for fast development cycles and microservices
 
 ![](https://github.com/andresmontoyab/dockerDocumentation/blob/master/resources/vm-vs-container.JPG) 
 
@@ -157,17 +171,6 @@ docker push <image_name> : --> Publish a image in docker hub
 
 4. The images that share layers will use the same information, that is to say if the information of a layer has already been downloaded, several layers can use it.
 
-To see the images:
-
-		docker images
-
-Delete images:
-
-		docker rmi <image_name>
-
-Create an image in base on a container.
-
-		docker commit <container_name> <name_new_image>
 
 ## Volumes
 
@@ -175,7 +178,9 @@ One thing with the containers is, when you turn off the container all the inform
 
 Example:
 
-		docker run --name db -d -v C:\dir\mongodata:/data/db mongo
+```sh
+docker run --name db -d -v C:\dir\mongodata:/data/db mongo
+```
 
 In the previous command we are running a mongo image, with name db, and map the volume to the folder mongodata.
 
@@ -220,45 +225,92 @@ docker pull <image_name>
 
 ## Docker File
 
-El docker file es una serie de instrucciones que debe seguir el docker engine, esta puede usar los siguientes comandos.
+Dockerfile it is a text document that contains all the required commands to mount a sprecifc image
 
-		FROM node:7
+Let's see the next example
 
-		WORKDIR /app
-		COPY package.json /app
-		RUN npm install
-		COPY . /app
+```docker
+FROM node:7
 
-		CMD npm start
+WORKDIR /app
+COPY package.json /app
+RUN npm install
+COPY . /app
 
-		EXPOSE 3001
+CMD npm start
+
+EXPOSE 3001
+```
 
 The above commands are a docker file, with those command we are telling to the docker engine the steps to create our image.
 
 One important thing to highlight here is that every different step create a new layer.
 
-1. FROM : -> Download the requirement to run de container.
-2. WORKDIR : -> Is similar to cd, change the directory where is all the info.
-3. COPY : -> Copy information from the host OS to the container.
-4. RUN : -> execute a command
-5. EXPOSE : -> Expose a port 
-6. CMD : -> Run a command.
-
 After we create our docker file we can use the next command to create the expected image.
 
-		docker -t prueba .
+```sh
+docker -t prueba .
+```
 
 In the previous command the -t mean the tag, so the tag for the new image will be "prueba" and also the "." tells to the docker engine where is the dockerfile base to build the image.
 
 Finally we can run our new image.
 
-		docker run - d prueba
+```sh
+docker run - d prueba
+```
 
 One important thing with docker is the use of cache, for example if we rebuild are previous image, we can notice that the build is going to take less time that the first execution, that is because a lot of information was cached.
 
 Nevertheless if we made some changes and at least one layer detect that the cache is not goint to work for this update all the next layers can not use the cache too. For this reason all the pending layer need to run all again.
 
 One posible solution to not reload all the layers is re order the instructions in order to only re load the necesary.
+
+### Docker File Instructions
+
+<table>
+<thead>
+	<tr>
+	<th>Commands</th>
+	<th>Action</th>
+	<th>Example</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td>FROM</td>
+		<td>Initializes the <strong>Base Image</strong> for subsequent instructions</td>
+		<td>FROM Ubuntu:16.04</td>
+	</tr>
+	<tr>
+		<td>RUN</strong></td>
+		<td>Runs command in the base image just before the creation</td>
+		<td>RUN npm install</td>
+	</tr>
+	<tr>
+		<td>COPY</td>
+		<td>Copy information from the local host to the new image</td>
+		<td>COPY . /app</td>
+	</tr>
+	<tr>
+		<td>EXPOSE</td>
+		<td>Expose a default port in the new image</td>
+		<td>EXPOSE 3001</td>
+	</tr>
+		<tr>
+		<td>WORKDIR</td>
+		<td>Pending</td>
+		<td>Pending</td>
+	</tr>
+		<tr>
+		<td>CMD</td>
+		<td>Pending</td>
+		<td>Pending</td>
+	</tr>
+
+</tbody>
+</table>
+
 
 
 

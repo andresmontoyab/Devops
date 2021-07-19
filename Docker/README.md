@@ -149,7 +149,7 @@ docker tag <current_name> <new_name> --> Change name Image
 
 - Containers are typically much smaller and faster, which makes them a much better fit for fast development cycles and microservices
 
-![](https://github.com/andresmontoyab/dockerDocumentation/blob/master/resources/vm-vs-container.JPG) 
+![](https://github.com/andresmontoyab/Devops/tree/master/Docker/resources/containers-vs-virtual-machines.jpeg) 
 
 ## Docker Concepts
 

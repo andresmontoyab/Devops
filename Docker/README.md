@@ -60,12 +60,12 @@
 	</tr>
 	</tr>
 	<tr>
-		<td>docker run -it <strong>image_name</strong></td>
-		<td>Iterative mode when create a container</td>
-	</tr>
-		<tr>
 		<td>docker start <strong>image_name</strong> </strong></td>
 		<td>Start a container that was previously created</td>
+	</tr>
+	<tr>
+		<td>docker run -it <strong>image_name</strong></td>
+		<td>Creates a container in Iterative mode</td>
 	</tr>
 	<tr>
 		<td>docker exec -it <strong>container_name</strong> bash </td>
@@ -80,6 +80,15 @@
 		<td> docker rm <strong>container_number</strong> </td>
 		<td> Delete the container, when you run docker ps -a the container shouldn't be there.</td>
 	</tr>
+		<tr>
+		<td>docker container ls</td>
+		<td>Show the list of running containers</td>
+	</tr>
+		</tr>
+		<tr>
+		<td>docker container ls -a</td>
+		<td>Show the list of the container running or sttoped</td>
+	</tr>
 	<tr>
 		<td>docker ps</td>
 		<td>Show the list of running containers</td>
@@ -89,7 +98,7 @@
 		<td>Show the list of the container running or sttoped</td>
 	</tr>
 	<tr>
-		<td>docker logs -f <strong>image_number</strong></td>
+		<td>docker logs -f <strong>container_name</strong></td>
 		<td>Show the container logs</td>
 	</tr>
 	<tr>
@@ -105,12 +114,24 @@
 		<td>Login into docker</td>
 	</tr>
 	<tr>
-		<td>docker login </td>
-		<td>Login into docker</td>
-	</tr>
-	<tr>
 		<td>docker push <strong>image_name></strong></td>
 		<td>Publish a image in docker hub</td>
+	</tr>
+	<tr>
+		<td>docker container top <strong>container_name</strong></td>
+		<td>Show what are the process that container is running</td>
+	</tr>
+	<tr>
+		<td>docker container inspect <strong>container_name</strong></td>
+		<td>Returns a json with all the container information</td>
+	</tr>
+	<tr>
+		<td>docker container inspect --format '{{ .NetworkSettings.IPAddress }}' <strong>container_name</strong></td>
+		<td>Returns specific container information</td>
+	</tr>
+	<tr>
+		<td>docker container stats </td>
+		<td>Returns information about the CPU use of each contianer</td>
 	</tr>
 </tbody>
 </table>
@@ -141,6 +162,10 @@ docker tag <current_name> <new_name> --> Change name Image
 
 ## VM vs Docker
 
+- Containers are not mini VMs
+
+- Containers are just processes
+
 - Docker containers and virtual machines are both ways of deploying applications inside environments that are isolated from the underlying hardware. 
 
 - Virtual Machine is a Software that tried to emulate a OS.
@@ -163,6 +188,35 @@ docker tag <current_name> <new_name> --> Change name Image
 4. Docker file -> The images are created in bases of docker files, in these docker files are specific command to build the images.
 
 ## Images
+
+- App binaries and dependencies
+- Metadata about the image data and how to run the image
+- An image is an ordered collection of root filesystem changes and the corresponding execution parameters for use within a container runtime
+- An image is the application we want to run.
+
+
+## Containers
+
+- A container is an instance of that image running as a process.
+
+### How docker creates a container
+
+- Looks for that image locally in image cache. If does not find any image then looks in remote image repository.
+
+- Download the latest versions
+
+- Create new container based on that image and prepares to start.
+
+- Gives a virtual IP on a private network inside docker engine.
+
+- Opens up port on host and forwards to container port 
+
+
+- We can hace many containers running off the same image
+
+## Images
+
+An image is the application we want to run.
 
 1. Initially, we understood as Images the templates that are used to create containers.
 
@@ -402,7 +456,65 @@ To run and override this configuration i can use the next command
 
 ## Docker Network
 
-1. Create virtual Networks and attach contqainers.
+Each container connected to a private virtual network "bridge"
+
+Each virtual network routes through NAT firewall on host IP
+
+All containers on a virtual network can talk to each other without -p
+
+### Network Commands
+
+<table>
+<thead>
+	<tr>
+	<th>Commands</th>
+	<th>Action</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td>docker network ls</td>
+		<td>Show networks</td>
+	</tr>
+	<tr>
+		<td>docker network inspect <strong>network_name</strong></td>
+		<td>Inspect a network</td>
+	</tr>
+	<tr>
+		<td>docker network create --driver <strong>network_name</strong></td>
+		<td>Create a network</td>
+	</tr>
+		<tr>
+		<td> docker container run -d --network my_app_net <strong>image_name</strong></td>
+		<td>Create a container with an attach it to a network</td>
+	</tr>
+	<tr>
+		<td>docker network connect <string>network_id</strong> <string>container name</strong></td>
+		<td>Attach a network to container</td>
+	</tr>
+	<tr>
+		<td>docker network disconnect <string>network_id</strong> <string>container name</strong></td>
+		<td>Detach a network from a container</td>
+	</tr>
+</tbody>
+</table>
+
+### Docker Network: DNS 
+
+Docker daemon has a built in DNS server that containers use by default
+
+- Understand how DNS is the key to easy inter-container comms.
+- See how it works by default with custom networks
+- Leran how to use --link to enable DNS on default bridge network
+
+### Network Drivers
+
+- Bridge: Default docker virtual network.
+- Host: It gains performance by skipping virtual networks but sacrifices security of container model
+- None: Removes eth0 and only leaves you with localhost interface in container
+
+
+1. Create virtual Networks and attach containers.
 
 2. Bridge network span single host.
 

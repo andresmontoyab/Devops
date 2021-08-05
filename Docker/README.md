@@ -16,7 +16,11 @@
 		* [Docker File Instructions](#Docker-File-Instructions)
 	* [Docker Push](#Docker-Push)
 	* [Docker Compose](#Docker-Compose)
+		* [Docker Compose environment file](#Docker-compose-environment-file)
+		* [Docker Compose Profiles](#Docker-Compose-Profiles)
 		* [Some tags docker compose](#Some-tags-docker-compose)
+		
+		* [Docker](#Docker)
 	* [Docker Network](#Docker-Network)
 	* [Docker Swarm](#Docker-Swarm)
 * [Docker Editions](#Docker-Editions)
@@ -133,6 +137,22 @@
 		<td>docker container stats </td>
 		<td>Returns information about the CPU use of each contianer</td>
 	</tr>
+	<tr>
+		<td>docker <strong>image_name</storng> history </td>
+		<td>Show layers of changes made in image</td>
+	</tr>
+	<tr>
+		<td>docker image build -t<strong>tag_name</storng> <strong>path_docker_file</strong> </td>
+		<td>Build an image in base of a docker file</td>
+	</tr>
+	<tr>
+		<td>docker image prune</td>
+		<td>Clean up just dangling images</td>
+	</tr>
+	<tr>
+		<td>docker system prune</td>
+		<td>Clean up Everything</td>
+	</tr>
 </tbody>
 </table>
 
@@ -211,7 +231,6 @@ docker tag <current_name> <new_name> --> Change name Image
 
 - Opens up port on host and forwards to container port 
 
-
 - We can hace many containers running off the same image
 
 ## Images
@@ -227,18 +246,37 @@ An image is the application we want to run.
 4. The images that share layers will use the same information, that is to say if the information of a layer has already been downloaded, several layers can use it.
 
 
-## Volumes
+## Persistent Data
 
-One thing with the containers is, when you turn off the container all the information is lost, the question is, If I have a DB container how can I preserve the information? The answer is Volumes.
+- Containers are usually immutable and ephemeral
+- "Immutable Infrastructure": Only re deploy containers, never change.
+- But what about databases or unique data?
+- Docker gives us feature to ensure these "separation of concerns"
+- This is known as "Persistent Data"
 
-Example:
+Docker has two options for containers to store files in the host machine, so that the files are persisted even after the container stops: volumes, and bind mounts.
 
-```sh
-docker run --name db -d -v C:\dir\mongodata:/data/db mongo
-```
+### Volumnes
 
-In the previous command we are running a mongo image, with name db, and map the volume to the folder mongodata.
+Volumes are stored in a part of the host filesystem which is managed by Docker (/var/lib/docker/volumes/ on Linux). Non-Docker processes should not modify this part of the filesystem. Volumes are the best way to persist data in Docker.
 
+- Created and managed by Docker
+- A given volume can be mounted into multiple containers simultaneously
+-  When no running container is using a volume, the volume is still available to Docker and is not removed automatically. You can remove unused volumes using docker volume prune
+- Volumes are the preferred way to persist data in Docker containers and services
+- Volumes are easier to back up or migrate than bind mounts.
+- Volumes work on both Linux and Windows containers
+
+### Bind Mounts
+
+Bind mounts may be stored anywhere on the host system. They may even be important system files or directories. Non-Docker processes on the Docker host or a Docker container can modify them at any time.
+
+- Available since the early days of Docker
+- When you use a bind mount, a file or directory on the host machine is mounted into a container
+- The file or directory is referenced by its full path on the host machine.
+- f you are developing new Docker applications, consider using named volumes instead
+- Bind Mounts basically are a mapping of host files or directories to a container files or directories
+- Basically just two colications poiting to the same file.
 
 ## Docker Hub
 
@@ -309,6 +347,8 @@ docker -t prueba .
 
 In the previous command the -t mean the tag, so the tag for the new image will be "prueba" and also the "." tells to the docker engine where is the dockerfile base to build the image.
 
+It is very important the order of our instrucctions, docker is going to use cache if the docker file has the same instruction, but if one instruction changes, that instruction and the next ones can not be cached.
+
 Finally we can run our new image.
 
 ```sh
@@ -366,47 +406,149 @@ One posible solution to not reload all the layers is re order the instructions i
 </tbody>
 </table>
 
-
-
-
 ## Docker Compose	
 
-1. Defining and running multi-container applications.
+Compose is a tool for defining and running multi-container Docker applications. With Compose, you use a YAML file to configure your application’s services. Then, with a single command, you create and start all the services from your configuration.
+
+- Compose works in all environments: production, staging, development, testing, as well as CI workflows.
+
+Using Compose is basically a three-step process:
+
+1. Define your app’s environment with a Dockerfile so it can be reproduced anywhere.
+2. Define the services that make up your app in docker-compose.yml so they can be run together in an isolated environment.
+3. Run ```docker compose``` up and the Docker compose command starts and runs your entire app
+
+The next snipped is a ```docker-compose``` example:
+
+```yml
+version: "3.9"  # optional since v1.27.0
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/code
+      - logvolume01:/var/log
+    links:
+      - redis
+  redis:
+    image: redis
+volumes:
+  logvolume01: {}
+```
+
+### Starting docker compose
+
+In order to run our docker compose we can run the next commands
+
+```sh
+docker-compose up 
+docker-compose up -d # The -d runs the services in the background
+```
+
+### Stopping docker compose
+
+In order to stop our docker compose we can run the next command
+
+```sh
+docker-compose down # Is going to stop and remove all the containers
+docker-compose down --volumes # Is going to stop and remove, all the containers and volumes
+```
+
+### Docker Compose environment file
+
+There are multiple parts of Compose that deal with environment variables in one sense or another
+
+It’s possible to use environment variables in your shell to populate values inside a Compose file:
+
+Let's see the next example.
+
+We have the next ```docker-compose``` file with:
+
+```yml
+version: '3'
+services:
+  web:
+    image: "webapp:${TAG}"
+```
+
+We want to make this `docker-compose` a little bit more dynamic, for that reason we use the `TAG` variable!
+
+The question is, Where is the `TAG` value? The answer could be in the `.env` file.
+
+the `.env` for this `docker-compose` should look like.
+
+```sh
+TAG=v2.0
+```
+
+If we put both concepts in mind this is what is going to happend.
+
+1. We run the `docker-compose up` command to start up our application
+2. When `docker-compose` is setting up everything, the process found a variable called `TAG`.
+3. `docker-compose` search for the `TAG` key in our `.env` file and finally assigned the value.
+
+
+Keep in mind that the `.env` file should be placed in the same project directory.
+
+### Docker Compose Profiles
+
+Profiles allow adjusting the Compose application model for various usages and environments by selectively enabling services
+
+ If unassigned, the service is always started but if assigned, it is only started if the profile is activated.
+
+ In order to enable one profile we need supply the `--profile`
+
+ ```sh
+ docker-compose --profile profile_name up
+ ```
+
+ Let's see one `docker-compose` example with profiles
+
+ ```yml
+version: "3.9"
+services:
+  frontend:
+    image: frontend
+    profiles: ["frontend"]
+
+  phpmyadmin:
+    image: phpmyadmin
+    depends_on:
+      - db
+    profiles:
+      - debug
+
+  backend:
+    image: backend
+
+  db:
+    image: mysql
+ ```
+
+Lets do quick review about what is happening in the above `docer-compose`
+
+- The `frontend` service has set the `frontend` profile
+- The `phpmyadmin` service has set the `debug` profile
+- The `backend` service does not has any profile.
+- The `db` service does not has any profile.
+
+ Now let see how the profiles works
+
+ ```sh
+docker-compose --profile debug up # Start db, backend and frontend
+docker-compose --profile frontend up # Start db, backend and phpmyadmin
+ ```
+
+
 
 2. Configuration defines in one or more files.
 
 		- docker-compose.yml(default)
 		- docker-compose.override.yml(default)
 
-3. Great for dev, staging and CI.
-
-Let's say that we already create a image with the name dockerImage, if we want to run the image we can use a command like:
-
-		docker run -d -p 8091-8093:8091-8093 11210:11210 dockerImage
-
-If we execute this docker is going to run the container in base of this image.
-
-Instead of running the above command we can put all of this configuration in a compose file.
-
-		version: "2"
-		services:
-			db:
-				image: dockerImage
-				ports:
-					- 8091:8091
-					- 8092:8092
-					- 8093:8093
-					- 11210:11210
-
-As you can notice the the structure of this file is YAML.
-
-To run docker compose we use the next command 
-
-		docker-compose up -d
-
-Bring up the default developer environment.
-
-## Some tags docker compose
+### Some tags docker compose
 
 1. image: -> Search the image name in the local repository or in docker.hub.
 
@@ -419,6 +561,7 @@ Bring up the default developer environment.
 5. environment: With this tag we can configure the environment variables require for the application.
 
 ## Overriden Docker Compose Files.
+
 
 Let's say that we have two docker compose files
 

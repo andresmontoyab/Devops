@@ -1,0 +1,14 @@
+version: '3.1' # If no versuib us specified then v1 is assumed, recommend v2 minimum
+
+services: # containers, same as docker run
+  servicename: #  A friendly name, this is also dns name inside network
+    image: # Optional, if you use build
+    command: # Optional, replace the default CMD specified by the image
+    enviroment: # Optional, same as -e in docker run
+    volumnes: # Optional, same as -v in docker run
+  servicename2:
+    depends_on: #Optional, let us know the dependencies among the containers
+
+volumnes: # Optional, same as docker volume create
+
+networks: # Optional, same as docker network create

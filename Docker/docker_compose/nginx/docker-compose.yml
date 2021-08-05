@@ -1,0 +1,14 @@
+version: '2'
+
+services: 
+  proxy:
+    build: 
+      context: .
+      dockerfile: nginx.Dockerfile
+    image: nginx-custom   # First is going to check if the image is in the cache if not then run the build steps
+    ports: 
+      -'80:80'
+  web:
+    image: httpd
+    volumes: 
+      - ./html:/usr/local/apache2/htdocs/

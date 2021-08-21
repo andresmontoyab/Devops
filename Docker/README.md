@@ -19,10 +19,11 @@
 		* [Docker Compose environment file](#Docker-compose-environment-file)
 		* [Docker Compose Profiles](#Docker-Compose-Profiles)
 		* [Some tags docker compose](#Some-tags-docker-compose)
-		
-		* [Docker](#Docker)
 	* [Docker Network](#Docker-Network)
 	* [Docker Swarm](#Docker-Swarm)
+		* [Docker Swarm Commands](#Docker-Swarm-Commands)
+		* [Docker Swarm Stack](#Docker-Swarm-Stack)
+		* [Docker Swarm Secrets](#Docker-Swarm-Secrets)
 * [Docker Editions](#Docker-Editions)
 	* [Docker Enterprise Edition](#Docker-Enterprise-Edition)
 	* [Docker Community Edition](#Docker-Community-Edition)
@@ -197,23 +198,13 @@ docker tag <current_name> <new_name> --> Change name Image
 ![](https://github.com/andresmontoyab/Devops/blob/master/docker/resources/containers-vs-virtual-machines.jpeg)
 
 
-## Docker Concepts
-
-1. Docker Image --> Is a template, is the basis for the containers.
-
-2. Docker Container --> Is an image running. 
-
-3. Docker Engine --> Is the code that manage the Docker features. Create and run containers.
-
-4. Docker file -> The images are created in bases of docker files, in these docker files are specific command to build the images.
-
 ## Images
 
 - App binaries and dependencies
 - Metadata about the image data and how to run the image
 - An image is an ordered collection of root filesystem changes and the corresponding execution parameters for use within a container runtime
 - An image is the application we want to run.
-
+- Initially, we understood as Images the templates that are used to create containers.
 
 ## Containers
 
@@ -232,19 +223,6 @@ docker tag <current_name> <new_name> --> Change name Image
 - Opens up port on host and forwards to container port 
 
 - We can hace many containers running off the same image
-
-## Images
-
-An image is the application we want to run.
-
-1. Initially, we understood as Images the templates that are used to create containers.
-
-2. Additionally it is also important to note that docker images are composed of layers, these layers are more specific elements to create the image, for example OS linux.
-
-3. Each of these layers contains a unique identifier, each time we run an image the relevant information of each of those capable is searched locally, in case it is not found it will be downloaded.
-
-4. The images that share layers will use the same information, that is to say if the information of a layer has already been downloaded, several layers can use it.
-
 
 ## Persistent Data
 
@@ -285,6 +263,7 @@ In previous section we use commands as docker run mongo. This command download a
 All of this information comes from hub.docker.com or Docker Hub.
 
 - Docker Hub is public repository in which we can find all the docker images.
+- Is the most popular public image registry0
 
 If we want to upload a docker image we can use the command `docker push`
 
@@ -654,34 +633,96 @@ Docker daemon has a built in DNS server that containers use by default
 
 - Bridge: Default docker virtual network.
 - Host: It gains performance by skipping virtual networks but sacrifices security of container model
+- Overlay: are best when you need containers running on different Docker hosts to communicate.
 - None: Removes eth0 and only leaves you with localhost interface in container
-
-
-1. Create virtual Networks and attach containers.
-
-2. Bridge network span single host.
-
-3. Overlay network spans multiple host.
-
-4. Work with Swarm and compose.
 
 ## Docker Swarm
 
-1. Native clustering for Docker.
+So far there are some question/problem that using just docker we are not able to solved:
 
-2. Provides a unified interface to a pool of Docker Hosts.
+- How do we automate container lifecycle.?
+- How can we easily scale out/in/up/down?
+- How canwe ensure our containers are re-created in the fail?
+- How can we replace containers without downtime (blue/gree deploy)?
+- How can we control/track where containers get started?
+- How can we created cross-node virtual networks?
+- How can we ensure only trusted servers run our containers?
+- How can we store secrets, keys, passwords and get them to the right container.?
 
-3. Fully integrated with machine and compose.
+In order to solved these problems we need to start thinking in `Orchestration` tools:
 
-4. Serves the standard Docker API.
+- Swarm mode is a clustering solution built inside docker
+- Not enabled by default.
+- Provides a unified interface to a pool of Docker Hosts.
+- Fully integrated with machine and compose.
+- Serves the standard Docker API.
 
-Sirve para describir la arquitectura de una app completa con todos sus servicios y segund para ejecutarlo
+### Docker Swarm Commands
 
-## Instalar Docker 
+<table>
+<thead>
+	<tr>
+	<th>Commands</th>
+	<th>Action</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td>docker swarm init</td>
+		<td>Activate our docker swarm.</td>
+	</tr>
+	<tr>
+		<td>docker node ls</td>
+		<td>Show all the created nodes</td>
+	</tr>
+	<tr>
+		<td>docker service create <strong>image_name</strong></td>
+		<td>Create a new service in docker swarm</td>
+	</tr>
+	<tr>
+		<td>docker service update <strong>service_name</strong> <strong>Updation</strong>  </td>
+		<td>Update our swarm service, example update the number of replicas</td>
+	</tr>
+		<tr>
+		<td>docker service update --image <strong>new_image_version</strong> <strong>service_name</strong></td>
+		<td>Update our swarm services to a newer image version</td>
+	</tr>
+	<tr>
+		<td> docker service ls</td>
+		<td>List all the swarm services available</td>
+	</tr>
+	<tr>
+		<td>docker service rm <string>service_name</strong></td>
+		<td>Remove a docker swarm service</td>
+	</tr>
+</tbody>
+</table>
 
-Para la instalacion de Docker bastará con descargar las fuentes proporcionadas en su pagina oficial, si usted posee un computador con
-SO windows menor a a Windows 10 deberá utilizar Docker QuickTools.
+### Getting Start Docker Swarm
 
+As we said previously `docker swarm` is `inactive` by default, in order to see the `docker swarm` current status in your machine you can run the command `docker info`.
+
+If your `docker swarm` is not enable you can run the next command to enable it. 
+
+```sh
+docker swarm init
+```
+
+With the previous command 
+
+### Docker Swarm Stack
+
+After we play a lot with `docker swarm` arise a new problem, how are we going to orchestrate all our docker swarm nodes?
+
+`Docker Swarm Stack` is the answer, `stack` help us with a clear `yml` format that let us handle all of our nodes/services created with `docker swarm`
+
+### Docker Swarm Secrets
+
+- Only stored on disk on manager nodes
+- Secrets are first stored in swarm, then assigned to a services
+- Only containers in assigned services can see them.
+
+### Docker Swarm Lifecycle
 
 # CLeaning Docker
 

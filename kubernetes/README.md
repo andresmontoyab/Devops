@@ -194,3 +194,65 @@ The `imperative objects` is middle point between `imperative` and `declarative`,
 - Good for prod of small environments, single file per command.
 - Store your changes in git-bases yaml files
 - Hard to automate
+
+## Using YAML
+
+As we saw in the `Manage Techniques` there several ways to use `Kubernetes` now we are going to see the `declarative` approach using `YAML`.
+
+In order to build our `Kubernetes` resources using the `YAML` style we need use the command `apply`
+
+<table>
+<thead>
+	<tr>
+	<th>Commands</th>
+	<th>Action</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td>kubectl apply -f <strong>my_file.yaml</strong></td>
+		<td>Create / Update resources in a file</td>
+	</tr>
+	<tr>
+		<td>kubectl apply -f <strong>my_yaml/</strong></td>
+		<td>Create / Update a whole directory of yaml</td>
+	</tr>
+	<tr>
+		<td>kubectl apply -f <strong>https:://some_url/some_file.yaml</strong></td>
+		<td>Create / Update from a URL</td>
+	</tr>
+</tbody>
+</table>
+
+### YAML Structure
+
+- Each file contains one or more manifests
+- Each manifest describe an API object (Deployment, job, secret)
+- Each manifest needs four parts: `apiVersion`, `kind`, `metadata` and `spec`
+
+### Dry Runs
+
+You can use the --dry-run=client flag to preview the object that would be sent to your cluster, without really submitting it. 
+
+## Storage
+
+### StatefulSet
+
+### Volumnes
+
+- Tied to lifecycle of a Pod
+- All containers in a single Pod can share them
+
+### Persistent Volumnes
+
+- Created at the cluster level, outlives a Pod
+- Separates storage config from pod using it
+- Multiple pods can share them
+
+## Namespaces
+
+- Namespaces limit scopes, aka ```virtual cluster`
+
+
+## Helm
+

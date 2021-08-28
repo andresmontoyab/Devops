@@ -20,6 +20,10 @@
 		* [Docker Compose Profiles](#Docker-Compose-Profiles)
 		* [Some tags docker compose](#Some-tags-docker-compose)
 	* [Docker Network](#Docker-Network)
+	* [Docker Security](#Docker-Security)
+		* [Kernel Namespace](#Kernel-Namespace)
+		* [Control Groups](#Control-Groups)
+		* [Docker Bench](#Docker-Bench)
 	* [Docker Swarm](#Docker-Swarm)
 		* [Docker Swarm Commands](#Docker-Swarm-Commands)
 		* [Docker Swarm Stack](#Docker-Swarm-Stack)
@@ -635,6 +639,20 @@ Docker daemon has a built in DNS server that containers use by default
 - Host: It gains performance by skipping virtual networks but sacrifices security of container model
 - Overlay: are best when you need containers running on different Docker hosts to communicate.
 - None: Removes eth0 and only leaves you with localhost interface in container
+
+## Docker Security
+
+### Kernel Namespace
+
+Namespaces provide the first and most straightforward form of isolation: processes running within a container cannot see, and even less affect, processes running in another container, or in the host system.
+
+### Control Groups
+
+Control groups are another key component of linux containers. They implement resources accounting and limit. They provide many useful metrics. but they also help ensure that each container gets its fair share of memory, CPU, disk I/O and more.
+
+### Docker Bench
+
+The docker bench for security is a script that cheks for dozens of common best-practices aroynd deploying Docker containers in production.
 
 ## Docker Swarm
 
